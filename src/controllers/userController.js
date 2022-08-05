@@ -165,15 +165,19 @@ let updateUser = async  (req, res)=> {
         // if (userId != req.userId)
         //     return res.status(400).send({ status: false, message: "Authorisation Failed--> you are not allowed to modify another acoount" })
         let data = req.body
+        let objectUpdate={}
+
         let files=req.files;
         if(!validator.isValidBody(data))return res.status(400).send({ status: false, message: "Please provide something to update" })
         if (data.fname || data.fname==="") {
             data.fname=data.fname.trim()
             if (!validator.isValid(data.fname))return res.status(400).send({ status: false, message: "fname is empty" })
+            objectUpdate.fname=data.fname
         }
         if (data.lname || data.lname==="") {
             data.lname=data.lname.trim()
             if (!validator.isValid(data.lname))return res.status(400).send({ status: false, message: "lname is empty" })
+            objectUpdate.lname=data.lname
         }
         if (data.email || data.email==="") {
             data.email=data.email.trim()
@@ -181,11 +185,21 @@ let updateUser = async  (req, res)=> {
             let findEmail = await userModel.findOne({ email: data.email })
             if (findEmail)return res.status(400).send({ status: false, message: "email is already exists please enter a new emailId " })
             if (validator.isValidEmail(data.email) == false) return res.status(400).send({ status: false, message: "You entered a Invalid email" })
+            objectUpdate.email=data.email
         }
         
-        if(!files || (files && files.length ===0))return res.status(400).send({status: false, message: 'Profile image is empty'})
-        const profilePicture = await aws.uploadFile(files[0])
-        data.profileImage = profilePicture
+        // if(!files || (files && files.length ===0))return res.status(400).send({status: false, message: 'Profile image is empty'})
+        // const profilePicture = await aws.uploadFile(files[0])
+        // data.profileImage = profilePicture
+        
+        
+        if(data.profileImage){
+            if(!files || (files && files.length ===0))return res.status(400).send({status: false, message: 'Profile image is empty'})
+            const profilePicture = await aws.uploadFile(files[0])
+            data.profileImage = profilePicture
+            objectUpdate.profileImage=data.profileImage
+        }
+        
         
         if (data.phone || data.phone==="") {
             data.phone=data.phone.trim()
@@ -193,6 +207,7 @@ let updateUser = async  (req, res)=> {
             let findPhone = await userModel.findOne({ phone: data.phone })
             if (phoneRex.test(data.phone) == false) return res.status(400).send({ status: false, message: "You entered a Invalid phone number" })
             if (findPhone) return res.status(400).send({ status: false, message: "This phone number is already exists" })
+            objectUpdate.phone=data.phone
         }
         if(data.password || data.password===""){
             data.password=data.password.trim()
@@ -201,39 +216,50 @@ let updateUser = async  (req, res)=> {
             const salt =await bcrypt.genSalt(10)
             const hashedPassword = await bcrypt.hash(data.password, salt)
             data.password=hashedPassword
+            objectUpdate.password=data.password
         }
+        if(data.address){
+            let findAddress= await userModel.findOne({_id:userId})
+
+        objectUpdate.address=findAddress.address
         let {shipping,billing}=data.address
         if(shipping){
             if(shipping.street || shipping.street===""){
                 shipping.street=shipping.street.trim()
                 if(!validator.isValid(shipping.street))return res.status(400).send({ status: false, message: "shipping street is empty" })
+                objectUpdate.address.shipping.street=shipping.street
             }
             if(shipping.city || shipping.city===""){
                 shipping.city=shipping.city.trim()
                 if(!validator.isValid(shipping.city))return res.status(400).send({ status: false, message: "shipping city is empty" })
+                objectUpdate.address.shipping.city=shipping.city
             }
             if(shipping.pincode || shipping.pincode===""){
                 shipping.pincode=shipping.pincode.trim()
                 if(!validator.isValid(shipping.pincode))return res.status(400).send({ status: false, message: "shipping pincode is empty" })
                 if (!/^[1-9][0-9]{5}$/.test(shipping.pincode))return res.status(400).send({status: false,message: "Shipping Pincode should in six digit Number"})
+                objectUpdate.address.shipping.pincode=shipping.pincode
             }
         }
         if(billing){
             if(billing.street || billing.street===""){
                 billing.street=billing.street.trim()
                 if(!validator.isValid(billing.street))return res.status(400).send({ status: false, message: "billing street is empty" })
+                objectUpdate.address.billing.street=billing.street
             }
             if(billing.city || billing.city===""){
                 billing.city=billing.city.trim()
                 if(!validator.isValid(billing.city))return res.status(400).send({ status: false, message: "billing city is empty" })
+                objectUpdate.address.billing.city=billing.city
             }
             if(billing.pincode || billing.pincode===""){
                 billing.pincode=billing.pincode.trim()
                 if(!validator.isValid(billing.pincode))return res.status(400).send({ status: false, message: "billing pincode is empty" })
                 if (!/^[1-9][0-9]{5}$/.test(billing.pincode))return res.status(400).send({status: false,message: "billing Pincode should in six digit Number"})
+                objectUpdate.address.billing.pincode=billing.pincode
             }
-        }
-        let updateData = await userModel.findOneAndUpdate({ _id: userId }, { $set: data, updatedAt: Date.now() }, { new: true })
+        }}
+        let updateData = await userModel.findOneAndUpdate({ _id: userId }, { $set: objectUpdate, updatedAt: Date.now() }, { new: true })
 
         return res.status(200).send({ status: true, message: "Data is updated successfully", data: updateData })
     

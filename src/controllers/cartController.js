@@ -116,7 +116,7 @@ const updateCart=async(req,res)=>{
 
         if (!findProduct)return res.status(404).send({ status: false, message: "No product found with respect to this productId" })
 
-        if (!removeProduct) {return res.status(200).send({ status: true, data: findCart })
+        if (!removeProduct) {return res.status(400).send({ status: false, msg: "remove product is require" })
         }else {
             if (removeProduct == 0) {
                 for (let i = 0; i < findCart.items.length; i++) {
