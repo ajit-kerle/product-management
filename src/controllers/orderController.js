@@ -5,6 +5,8 @@ const userModel = require("../models/userModel")
 const mongoose = require("mongoose")
 const validator = require("../utility/validation")
 
+
+//create order
 const createOrder = async (req, res) => {
     try {
         let userId = req.params.userId

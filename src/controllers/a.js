@@ -12,5 +12,5 @@
 //   console.log(sum)
 
 let iat = Date.now()
-let exp = (iat) + (1*60 * 1000)
+let exp = (iat) + (1000*600 * 1000)
 console.log(exp-iat)

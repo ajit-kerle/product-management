@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const authentication = (req, res, next) => {
     try {
         let token = req.headers.authorization
-        // console.log(token)
+        // console.log(token)//
         if (!validator.isValid(token) || typeof token == "undefined") return res.status(400).send({ status: false, Message: "⚠️Please Enter token" })
         // console.log(token)
         // split and get the token only 🤯🤯

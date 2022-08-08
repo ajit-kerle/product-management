@@ -95,6 +95,8 @@ let createCart = async (req, res) => {
 
 }
 
+
+//update cart//
 const updateCart=async(req,res)=>{
     try{
         let userId = req.params.userId
