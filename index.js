@@ -7,13 +7,10 @@ const app = express();
 
 
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+
 app.use(multer().any())
 
-mongoose.connect("mongodb+srv://21pintoo-singh:S0Uw8LhNlYRyHfiq@cluster1.k5nsu.mongodb.net/group51Database",{
+mongoose.connect("mongodb+srv://ajitkerle:2R693j4kFokYqNZJ@cluster0.djs4ptj.mongodb.net/ajitkerle-product-management?retryWrites=true&w=majority",{
       useNewUrlParser:true
 }
 )
