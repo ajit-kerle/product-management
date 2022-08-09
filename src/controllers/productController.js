@@ -121,7 +121,7 @@ const getProduct = async function (req, res) {
             objectFilter.title.$regex = name
             objectFilter.title.$options = "i"
         }
-        let priceArray = []
+
         let priceGreaterThan = queryData.priceGreaterThan
         if (priceGreaterThan || priceGreaterThan==="") {
             if (!validator.isValid(priceGreaterThan))return res.status(400).send({ status: false, message: "priceGreaterThan is empty" })

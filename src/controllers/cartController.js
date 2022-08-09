@@ -78,6 +78,7 @@ let createCart = async (req, res) => {
                     return res.status(200).send({ status: true, message: "product added successfully", data: updateCartForSameProductId })
                 } else continue;
             }
+            
             objectCreate.items = findCart.items
             let pushObject = {}
             pushObject.productId = productId

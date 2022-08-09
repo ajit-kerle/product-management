@@ -9,7 +9,7 @@ const createOrder = async (req, res) => {
     try {
         let userId = req.params.userId
         if (!mongoose.isValidObjectId(userId)) return res.status(400).send({ status: false, message: "userId is invalid" })
-        let findUser = await userModel.findOne({ _id:userId })
+        let findUser = await userModel.findOne({ _id: userId })
         if (!findUser) return res.status(404).send({ status: false, message: "userId is not found" })
         //authorisation
         if (userId != req.tokenData.userId) return res.status(401).send({ status: false, Message: "Unauthorized user!" })
@@ -34,6 +34,7 @@ const createOrder = async (req, res) => {
             // console.log(data.statusEnum)
             objectCreate.status = data.status
         }
+        
         objectCreate.userId = findCart.userId
         objectCreate.items = findCart.items
         objectCreate.totalPrice = findCart.totalPrice
@@ -56,10 +57,10 @@ const createOrder = async (req, res) => {
 const updateOrder = async (req, res) => {
     try {
         let userId = req.params.userId
-        if (!mongoose.isValidObjectId(userId))return res.status(400).send({ status: false, message: "You entered an invalid userId" })
-        
-        let findUser = await userModel.findById({_id:userId})
-        if (!findUser)return res.status(404).send({ status: false, message: "No such User found" })
+        if (!mongoose.isValidObjectId(userId)) return res.status(400).send({ status: false, message: "You entered an invalid userId" })
+
+        let findUser = await userModel.findById({ _id: userId })
+        if (!findUser) return res.status(404).send({ status: false, message: "No such User found" })
         //authorization
         if (userId != req.tokenData.userId) return res.status(401).send({ status: false, Message: "Unauthorized user!" })
 
