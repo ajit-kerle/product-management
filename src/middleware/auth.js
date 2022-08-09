@@ -9,6 +9,7 @@ const authentication = (req, res, next) => {
        
         if (!validator.isValid(token) || typeof token == "undefined") return res.status(400).send({ status: false, Message: "Please Enter token" })
 
+
         const bearer = token.split(' ') // get the 1 index value
         const bearerToken = bearer[1]
 

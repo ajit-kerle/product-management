@@ -7,7 +7,7 @@ const mongoose = require("mongoose")
 
 const phoneRex = /^[6789][0-9]{9}$/
 
-
+//create user
 const createUser = async (req, res) => {
     try {
         //fetching data present in request body 
@@ -121,7 +121,9 @@ const loginUser = async function (req, res) {
 
         let user = await userModel.findOne({ email: email });
         if (!user) {
+
             return res.status(404).send({ status: false, message: "Email Not found" });
+       
         }
         //comparing hard-coded password to the hashed password
         const validPassword = await bcrypt.compare(password, user.password)
@@ -155,8 +157,9 @@ const getUserById = async (req, res) => {
         if (!mongoose.isValidObjectId(userId)) return res.status(400).send({ status: false, message: `Invalid userId in params` })
         const user = await userModel.findOne({ _id: userId })
         if (!user) return res.status(404).send({ status: false, message: "UserId Not found" })
-        //authorization
-        if (userId != req.tokenData.userId) return res.status(401).send({ status: false, Message: "Unauthorized user!" })
+
+        if (req.tokenData.userId != userId) return res.status(403).send({ status: false, message: "unauthorized access" })
+
         return res.status(200).send({ status: true, message: 'User profile details', data: user })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })

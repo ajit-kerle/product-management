@@ -8,6 +8,7 @@ var nameRegex = /^[a-zA-Z\s]*$/
 var priceRegex = /^[1-9]\d*(\.\d+)?$/
 var installmentRegex = /\d/
 
+//create product
 const createProduct = async (req, res) => {
     try {
         let data = req.body
